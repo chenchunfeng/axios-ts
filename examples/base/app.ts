@@ -63,11 +63,14 @@ axios({
 
 axios({
   method: 'post',
-  url: '/base/post',
+  url: '/base/post/test',
   data: {
     a: 1,
     b: 2
-  }
+  },
+  headers: {
+    'content-type': 'application/json;charset=utf-8'
+  },
 })
 
 const arr = new Int32Array([21, 31])
@@ -76,4 +79,34 @@ axios({
   method: 'post',
   url: '/base/buffer',
   data: arr
+})
+
+axios({
+  method: 'post',
+  url: '/base/post/test?1',
+  data: {
+    a: 1,
+    b: 2
+  }
+})
+
+axios({
+  method: 'post',
+  url: '/base/post/test?2',
+  headers: {
+    'content-type': 'application/json;'
+  },
+  data: {
+    a: 1,
+    b: 2
+  }
+})
+
+const paramsString = 'q=URLUtils.searchParams&topic=api'
+const searchParams = new URLSearchParams(paramsString)
+
+axios({
+  method: 'post',
+  url: '/base/post/test?3',
+  data: searchParams
 })
