@@ -32,3 +32,30 @@ export function transformHeaders(headers:any, data: any): any {
     }
     return headers;
 }
+
+/**
+ * 
+ * @param headers  getAllResponseHeaders()
+ * @description 通过'\r\n'分割string 再通过“：”key value 分割
+ * @return {Object} 
+ */
+export function parseHeader(headers: String): Object {
+    let prase = Object.create(null);
+    if (!headers) {
+        return prase;
+    }
+    headers.split('/r/n').forEach(header => {
+        let [key, value] = header.split(':');
+        if (!key) {
+            return ;
+        }
+
+        key = key.trim().toLowerCase(); // 去空格 转小写
+        if (value) {
+            value = value.trim();
+        }
+
+        prase[key] = value;
+    })
+    return prase;
+}
