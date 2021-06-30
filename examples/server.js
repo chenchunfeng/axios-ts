@@ -60,4 +60,17 @@ router.post('/base/buffer', function(req, res) {
   })
 })
 
+router.get('/error/get1', function(req, res) {
+  if (Math.random() > 0.5) {
+    res.json({msg: 'hello world'})
+  } else {
+    res.status(500)
+    res.end()
+  }
+})
+router.get('/error/get2', function(req, res) {
+  setTimeout(() => {
+    res.json({msg: 'hello world'})
+  }, 3000)
+})
 app.use(router)
