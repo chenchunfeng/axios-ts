@@ -65,6 +65,7 @@ router.get('/error/get1', function(req, res) {
     res.json({msg: 'hello world'})
   } else {
     res.status(500)
+    res.json({msg: '我是个错误'})
     res.end()
   }
 })

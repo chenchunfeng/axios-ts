@@ -32,3 +32,30 @@ if (response.status >= 200 && response.status < 300) {
 }
 
 ```
+
+#### 2. 错误对象化
+
+创建 axiosError 类 返回 其对象
+```javascript
+class AxiosError extends Error {
+    isAxiosError: Boolean,
+    config: AxiosRequestConfig,
+    request?: any,
+    response?: AxiosResponse,
+    code?: string | null
+}
+
+function createError(
+    message: string,
+    config: AxiosRequestConfig,
+    code?: string | null,
+    request?: any,
+    response?: AxiosResponse
+): AxiosError {
+    return new AxiosError(params);
+}
+
+```
+> 这里要注意一点，使用 Object.setPrototypeOf(this, AxiosError.prototype) 解决 TypeScript 继承一些内置对象的时候的坑
+> axios.catch 无法类型推断，要自己加上 e: AxiosError
+

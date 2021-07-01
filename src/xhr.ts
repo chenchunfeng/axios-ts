@@ -1,5 +1,6 @@
 import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from './types'
 import { parseHeader } from '../helpers/headers'
+import { createError } from '../helpers/error'
 
 export default function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
@@ -14,10 +15,23 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
     }
     // 网络错误
     request.onerror = function() {
-      reject(new Error('netword error'))
+      reject(
+        createError({
+          message: 'netword error',
+          config,
+          request
+        })
+      )
     }
     request.ontimeout = function() {
-      reject(new Error(`timeout of ${timeout} ms exceeded`))
+      reject(
+        createError({
+          message: `timeout of ${timeout} ms exceeded`,
+          config,
+          request,
+          code: 'CONNABORTED'
+        })
+      )
     }
     // 第三个参数为异步
     request.open(method.toUpperCase(), url, true)
@@ -48,7 +62,14 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       if (response.status >= 200 && response.status < 300) {
         resolve(response)
       } else {
-        reject(`request failded witch status code ${response.status}`)
+        reject(
+          createError({
+            message: `request failded witch status code ${response.status}`,
+            config,
+            request,
+            response
+          })
+        )
       }
     }
     // 添加header
