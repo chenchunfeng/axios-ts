@@ -59,3 +59,32 @@ function createError(
 > 这里要注意一点，使用 Object.setPrototypeOf(this, AxiosError.prototype) 解决 TypeScript 继承一些内置对象的时候的坑
 > axios.catch 无法类型推断，要自己加上 e: AxiosError
 
+#### 3.接口扩展
+- axios.request(config)
+- axios.get(url[, config])
+- axios.delete(url[, config])
+- axios.head(url[, config])
+- axios.options(url[, config])
+- axios.post(url[, data[, config]])
+- axios.put(url[, data[, config]])
+- axios.patch(url[, data[, config]])
+
+需要把axios 函数变成一个对象，支持以上属性。
+
+```javascript
+
+function createInstance(): AxiosInstance {
+  const context = new Axios();
+
+  // 为了实现axios()的操作
+  const instance = Axios.prototype.request.bind(context);
+
+  extend(instance, context);
+
+  return instance as AxiosInstance;
+}
+const axios = createInstance();
+export default axios
+
+
+```
