@@ -60,6 +60,7 @@ function createError(
 > axios.catch 无法类型推断，要自己加上 e: AxiosError
 
 #### 3.接口扩展
+- axios(config)
 - axios.request(config)
 - axios.get(url[, config])
 - axios.delete(url[, config])
@@ -86,5 +87,21 @@ function createInstance(): AxiosInstance {
 const axios = createInstance();
 export default axios
 
+```
 
+- axios(url, config)
+
+需要修改Axios.request的入参
+
+```javascript
+    request(param: string | AxiosRequestConfig, config?: AxiosRequestConfig): AxiosPromise {
+        if (typeof param === 'string') {
+            if (!config) {
+                config = {};
+            }
+            config.url = param;
+        }
+        config = param;
+        return dispatchRequest(config)
+    }
 ```

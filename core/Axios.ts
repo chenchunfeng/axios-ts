@@ -2,8 +2,17 @@ import { AxiosRequestConfig, AxiosPromise, Method } from '../src/types'
 import dispatchRequest from './dispatchRequest'
 
 export default class Axios {
-    request(config: AxiosRequestConfig): AxiosPromise {
-        return dispatchRequest(config)
+    request(param: string | AxiosRequestConfig, config?: AxiosRequestConfig): AxiosPromise {
+        // 第一个参数只为string 的url
+        if (typeof param === 'string') {
+            if (!config) {
+                config = {};
+            }
+            config.url = param;
+        } else {
+            config = param;
+        }
+        return dispatchRequest(config);
     }
 
     _requestMethodWithoutData(method: Method, url: string, config?: AxiosRequestConfig) {

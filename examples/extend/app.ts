@@ -8,6 +8,11 @@ axios({
   }
 })
 
+axios('/extend/get?a=1', {method: 'get'})
+axios('/extend/get?a=1')
+
+
+
 
 axios.request({
   url: '/extend/post',
