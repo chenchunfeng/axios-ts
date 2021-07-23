@@ -105,3 +105,46 @@ export default axios
         return dispatchRequest(config)
     }
 ```
+#### 4.响应数据支持泛型
+
+通过自定义的类型，可以推断出返回的数据结构
+
+- 需求
+```javascript
+interface ResponseData<T = any> {
+  code: number,
+  data: T,
+  message: string
+}
+
+interface User {
+  name: string,
+  age: number
+}
+
+function getUserInfo() {
+  return axios<ResponseData<User>>('/extend/user').then(res => res.data).catch(e => console.warn(e));
+}
+
+async function test() {
+  const user = await getUserInfo();
+  if (user) {
+    // user 可推断出
+    // {
+    //   code: number,
+    //   data: {
+    //     name: string,
+    //     age: number
+    //   },
+    //   message: string
+    // }
+    console.log(user.data.name);
+  }
+}
+```
+- 实现, 需要给axios相关api添加泛型参数
+
+```javascript
+
+```
+
