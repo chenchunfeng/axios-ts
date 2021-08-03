@@ -113,5 +113,8 @@ router.get('/extend/user', function(req, res) {
     }
   })
 })
+router.get('/interceptor/get', function(req, res) {
+  res.end('interceptor')
+})
 
 app.use(router)

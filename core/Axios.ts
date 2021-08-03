@@ -1,7 +1,22 @@
-import { AxiosRequestConfig, AxiosPromise, Method } from '../src/types'
+import { AxiosRequestConfig, AxiosResponse, AxiosPromise, Method, AxiosInterceptors, ResolveFn, RejectFn } from '../src/types'
 import dispatchRequest from './dispatchRequest'
+import InterceptorManager from './InterceptorManager';
 
+interface PromiseChain<T> {
+    resolved: ResolveFn<T> | ((config: AxiosRequestConfig) => AxiosPromise)
+    rejected?: RejectFn
+}
 export default class Axios {
+
+    interceptors: AxiosInterceptors
+
+    constructor() {
+        this.interceptors = {
+            request: new InterceptorManager<AxiosRequestConfig>(),
+            response: new InterceptorManager<AxiosResponse>(),
+        }
+    }
+
     request(param: string | AxiosRequestConfig, config?: AxiosRequestConfig): AxiosPromise {
         // 第一个参数只为string 的url
         if (typeof param === 'string') {
@@ -12,7 +27,33 @@ export default class Axios {
         } else {
             config = param;
         }
-        return dispatchRequest(config);
+
+        // 开始拦截器操作
+        const chain: PromiseChain<any>[] = [];
+
+        chain.push({
+          resolved: dispatchRequest,
+          rejected: undefined
+        })
+        // 添加请求拦截器
+        this.interceptors.request.forEach(interceptor => {
+          // 后进的先出
+          chain.unshift(interceptor);
+        }) 
+        // 添加响应拦截器
+        this.interceptors.response.forEach(interceptor => {
+          // 先进的先出
+          chain.push(interceptor);
+        })
+        // 开始链式执行
+        let promise = Promise.resolve(config) ;  // 这里注意config参数， response的参数由dispatchRequest 返回
+      
+        while(chain.length) {
+          const { resolved, rejected } = chain.shift()!;  // !表示强制解析（告诉typescript编译器，这里一定有值）
+          promise = promise.then(resolved, rejected);
+        }
+
+        return promise as AxiosPromise;
     }
 
     _requestMethodWithoutData(method: Method, url: string, config?: AxiosRequestConfig) {

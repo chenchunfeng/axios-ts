@@ -148,3 +148,71 @@ async function test() {
 
 ```
 
+#### 5.拦截器实现
+
+##### 需求
+- 请求、响应拦截器，都支持resolveFn, rejectFn两个参数
+- 拦截器执行顺序，请求的，就先进后出（栈）， 响应的为先进先出（队列）
+- 还要支持删除拦截器功能 eject()
+
+##### 实现
+
+拆分成两块功能，1.收集拦截器  2.循环执行拦截器
+
+```javascript
+// 收集
+const interceptorManager = {
+  interceptors: [],
+  use: (resolveFn,rejectFn) => {
+    this.interceptors.push({
+      resolved: resolveFn,
+      rejected: rejectFn || null
+    })
+    return this.interceptors.length - 1;
+  }, 
+  eject: (index) => {
+    this.interceptors[index] = null;
+  },
+  forEach: (fn) => {
+    fn(interceptor);
+  }
+}
+Axios.interceptor = {
+  request: new interceptorManager(),
+  response: new interceptorManager()
+}
+
+// 循环执行
+Axios.request = (config) => {
+  const chain = [];
+  chain.push({
+    resolved: dispathRequest,
+    rejected: null
+  })
+  // 添加请求拦截器
+  this.interceptor.request.interceptors.forEach(interceptor => {
+    // 后进的先出
+    chain.unshift(interceptor);
+  }) 
+  // 添加响应拦截器
+  this.interceptor.response.interceptors.forEach(interceptor => {
+    // 先进的先出
+    chain.push(interceptor);
+  })
+  // 开始链式执行
+  let promise = Promise.resolve(config);  // 这里注意config参数， response的参数由dispatchRequest 返回
+
+  while(chain.length) {
+    const {resolved, rejected} = chain.shift(); 
+    promise = promise.then(resolved, rejected);
+  }
+
+  return promise;
+}
+
+```
+
+
+
+
+
