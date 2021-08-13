@@ -1,16 +1,19 @@
 import { AxiosRequestConfig, AxiosResponse, AxiosPromise, Method, AxiosInterceptors, ResolveFn, RejectFn } from '../src/types'
-import dispatchRequest from './dispatchRequest'
+import dispatchRequest from './dispatchRequest';
 import InterceptorManager from './InterceptorManager';
-
+import mergeConfig from './mergeConfigs';
 interface PromiseChain<T> {
     resolved: ResolveFn<T> | ((config: AxiosRequestConfig) => AxiosPromise)
     rejected?: RejectFn
 }
 export default class Axios {
+    defaults: AxiosRequestConfig
 
     interceptors: AxiosInterceptors
 
-    constructor() {
+    constructor(defaultConfig: AxiosRequestConfig) {
+        this.defaults = defaultConfig
+
         this.interceptors = {
             request: new InterceptorManager<AxiosRequestConfig>(),
             response: new InterceptorManager<AxiosResponse>(),
@@ -27,6 +30,8 @@ export default class Axios {
         } else {
             config = param;
         }
+        // 合并config
+        config = mergeConfig(this.defaults, config);
 
         // 开始拦截器操作
         const chain: PromiseChain<any>[] = [];

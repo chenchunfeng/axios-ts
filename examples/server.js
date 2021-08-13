@@ -117,4 +117,9 @@ router.get('/interceptor/get', function(req, res) {
   res.end('interceptor')
 })
 
+router.post('/config/test', function(req, res) {
+  res.json(req.body);
+  res.end();
+})
+
 app.use(router)

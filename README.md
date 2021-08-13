@@ -212,6 +212,15 @@ Axios.request = (config) => {
 
 ```
 
+#### 6.配置默认设置
+
+需求
+
+1. axios里面添加默认设置
+2. 默认设置、自定义设置的合并策略
+3. plattenHeaders
+
+
 
 
 

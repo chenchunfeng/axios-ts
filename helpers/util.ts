@@ -18,3 +18,27 @@ export function extend<T, F>(to: T, from: F): T & F {
     } 
     return to as T & F;
 }
+
+export function deepMerge(...objs: any[]) {
+    const result = Object.create(null);
+    objs.forEach(obj => {
+        if (obj) {
+            // 合并相同的key，后者会覆盖前者
+            Object.keys(obj).forEach(key => {
+                const value = obj[key];
+                if(isPlainObject(value)) {
+                    if (isPlainObject(result[key])) {
+                        result[key] = deepMerge(result[key], value)
+                    } else {
+                        result[key] = deepMerge({}, value)
+                    }
+                } else {
+                    result[key] = value;
+                }
+            })
+        }
+
+    })
+
+    return result;
+}
