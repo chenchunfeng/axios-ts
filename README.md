@@ -219,6 +219,11 @@ Axios.request = (config) => {
 1. axios里面添加默认设置
 2. 默认设置、自定义设置的合并策略
 3. plattenHeaders
+#### 7.配置默认设置- transformRequst transformResponse
+
+1. 添加默认设置中添加transformRequst、transformResponse处理原来的逻辑
+2. 新增transform函数处理 其数组 
+3. 使用的时候，还是要concat默认配置
 
 
 
