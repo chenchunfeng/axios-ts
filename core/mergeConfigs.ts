@@ -41,7 +41,7 @@ function objectMergeStart(val1: any, val2: any): any {
 
 
 
-function mergeConfig(initConfig: AxiosRequestConfig, customConfig: AxiosRequestConfig):  AxiosRequestConfig{
+function mergeConfig(initConfig: AxiosRequestConfig, customConfig?: AxiosRequestConfig):  AxiosRequestConfig{
     if (!customConfig) {
         customConfig = {};
     }
