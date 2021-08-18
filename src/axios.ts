@@ -1,8 +1,8 @@
 import { AxiosRequestConfig, AxiosStatic } from './types'
-import { extend } from '../helpers/util'
-import Axios from '../core/Axios'
+import { extend } from './helpers/util'
+import Axios from './core/Axios'
 import defaults from './defaults'
-import mergeConfig from '../core/mergeConfigs'
+import mergeConfig from './core/mergeConfigs'
 
 function createInstance(config: AxiosRequestConfig): AxiosStatic {
   const context = new Axios(config)

@@ -1,4 +1,4 @@
-import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from './types'
+import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../types'
 import { parseHeader } from '../helpers/headers'
 import { createError } from '../helpers/error'
 
@@ -34,7 +34,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       )
     }
     // 第三个参数为异步
-    request.open(method.toUpperCase(), url, true)
+    request.open(method.toUpperCase(), url!, true)
 
     // 监听完成回调
     request.onreadystatechange = () => {
