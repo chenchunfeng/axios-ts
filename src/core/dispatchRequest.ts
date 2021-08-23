@@ -11,6 +11,7 @@ function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
 }
 
 function processConfing(config: AxiosRequestConfig): void {
+  throwIfCancellationRequested(config)
   config.url = transformConfig(config)
   // config.headers = transformHeadersData(config)
   // config.data = transformRequestData(config)
@@ -37,6 +38,12 @@ function transformResponseData(res: AxiosResponse): AxiosResponse {
   // res.data = transformResponse(res.data)
   res.data = transform(res.data, res.headers, res.config.transformResponse)
   return res
+}
+
+function throwIfCancellationRequested(config: AxiosRequestConfig): void {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested()
+  }
 }
 
 export default dispatchRequest

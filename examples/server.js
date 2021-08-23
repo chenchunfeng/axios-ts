@@ -122,4 +122,15 @@ router.post('/config/test', function(req, res) {
   res.end();
 })
 
+router.get('/cancel/get', function(req, res) {
+  setTimeout(() => {
+    res.json(req.body);
+    res.end();
+  }, 3000)
+})
+router.post('/cancel/post', function(req, res) {
+  res.json(req.body);
+  res.end();
+})
+
 app.use(router)

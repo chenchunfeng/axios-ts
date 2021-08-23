@@ -81,6 +81,14 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       }
     })
 
+    // 取消CancelToken
+    if (config.CancelToken) {
+      config.CancelToken.promise.then(reason => {
+        reject(reason)
+        request.abort()
+      })
+    }
+
     request.send(data)
   })
 }
