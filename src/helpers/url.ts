@@ -72,3 +72,27 @@ function encode(val: string): string {
     .replace(/%5B/gi, '[')
     .replace(/%5D/gi, ']')
 }
+
+const UrlParsingNode = document.createElement('a')
+const CurrentOrigin = resolveUrl(window.location.href)
+
+interface URLOrigin {
+  host: string
+  protocol: string
+}
+function resolveUrl(url: string): URLOrigin {
+  UrlParsingNode.setAttribute('href', url)
+  const { host, protocol } = UrlParsingNode
+  return {
+    host,
+    protocol
+  }
+}
+
+export function isUrlSameOrigin(requestUrl: string): boolean {
+  const parsedOrigin = resolveUrl(requestUrl)
+
+  return (
+    parsedOrigin.host === CurrentOrigin.host && parsedOrigin.protocol === CurrentOrigin.protocol
+  )
+}

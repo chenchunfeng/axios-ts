@@ -1,6 +1,8 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const webpack = require('webpack')
+const cookieParser = require('cookie-parser')
+
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const WebpackConfig = require('./webpack.config')
@@ -19,11 +21,16 @@ app.use(webpackDevMiddleware(compiler, {
 }))
 
 app.use(webpackHotMiddleware(compiler))
-
-app.use(express.static(__dirname))
+app.use(express.static(__dirname, {
+  setHeaders (res) {
+    res.cookie('XSRF-TOKEN-D', '1234abc')
+  }
+}))
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cookieParser())
+
 
 const port = process.env.PORT || 8081
 module.exports = app.listen(port, () => {
